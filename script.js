@@ -17,20 +17,6 @@ var config = {
     //Create a userProfile to capture this Player's info
     var userProfile = new Object()
 
-    database.ref("/count").on("value", function(snapshot){
-      if (snapshot.child("Count").exists()){
-          userCount = parseInt(snapshot.val().Count)
-          console.log("user Count: " + userCount)
-          userProfile.Count = userCount
-      }
-      else {
-          userCount = 0
-          userProfile.Count = userCount
-          // database.ref("/count").set({
-          //     Count: userCount
-          // })
-      }
-  })
 
 // When the client's connection state changes...
 connectedRef.on("value", function(snap) {
@@ -40,7 +26,7 @@ connectedRef.on("value", function(snap) {
   var con = connectionsRef.push(true)
   // Remove user from the connection list when they disconnect.
   con.onDisconnect().remove()
-  userCount--
+  // userProfile.userCount--
   }
 })
 
@@ -64,27 +50,33 @@ connectedRef.on("value", function(snap) {
         $("#rockBtn").on("click", function(){
           console.log($(this).attr("val"))
           userGuess = $(this).attr("val")
+          $("#rpsChoice").append(userGuess)
           userProfile.Choice = userGuess
           $("#play").attr("disabled","disabled")
           $("#selection").html("You Chose Rock")
           database.ref().push(userProfile)
+          console.log(userProfile)
         })
         $("#paperBtn").on("click", function(){
           console.log($(this).attr("val"))
           userGuess = $(this).attr("val")
+          $("#rpsChoice").append(userGuess)
           userProfile.Choice = userGuess
           $("#play").attr("disabled","disabled")
           $("#selection").html("You Chose Paper")
           database.ref().push(userProfile)
+          console.log(userProfile)
         })
         
         $("#scissorsBtn").on("click", function(){
           console.log($(this).attr("val"))
           userGuess = $(this).attr("val")
+          $("#rpsChoice").append(userGuess)
           userProfile.Choice = userGuess
           $("#play").attr("disabled","disabled")
           $("#selection").html("You Chose Scissors")
           database.ref().push(userProfile)
+          console.log(userProfile)
         })
     })
 
@@ -100,15 +92,15 @@ $("#nameSubmit").on("click", function(){
 
 database.ref().on("value", function(snapshot){
   console.log(snapshot.val().connections)
-  userArr = snapshot.val()
+  userArr = snapshot.val().connections
   newArray = []
   Object.keys(userArr).map(function(key) {
       newArray.push([userArr[key]])
   })
-  console.log(newArray.length)
+  console.log("connections: " + newArray.length)
   //user profile contains count of users
-  userProfile.userCount = newArray.length
-  
+  userProfile.Count = newArray.length
+  $("#numOnline").text("Number of Players: " + userProfile.Count)
 })
 
   
