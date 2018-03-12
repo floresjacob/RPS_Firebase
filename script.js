@@ -5,25 +5,15 @@ var config = {
     projectId: "test1-1ab8a",
     storageBucket: "test1-1ab8a.appspot.com",
     messagingSenderId: "143362573111"
-  };
-  firebase.initializeApp(config);
+  }
+  firebase.initializeApp(config)
 
     var database = firebase.database()
     var connectionsRef = database.ref("/connections")
     var connectedRef = database.ref(".info/connected")
-
-        // When the client's connection state changes...
-    connectedRef.on("value", function(snap) {
-
-      // If they are connected..
-     if (snap.val()) {
-        // Add user to the connections list.
-        var con = connectionsRef.push(true)
-        // Remove user from the connection list when they disconnect.
-        con.onDisconnect().remove()
-      }
-    })
-
+    var userCount = 0
+    //Disable play button until name is filled out
+    $("#play").attr("disabled",true)
     //Create a userProfile to capture this Player's info
     var userProfile = new Object()
 
@@ -31,14 +21,28 @@ var config = {
       if (snapshot.child("Count").exists()){
           userCount = parseInt(snapshot.val().Count)
           console.log("user Count: " + userCount)
+          userProfile.Count = userCount
       }
       else {
           userCount = 0
-          database.ref("/count").set({
-              Count: userCount
-          })
+          userProfile.Count = userCount
+          // database.ref("/count").set({
+          //     Count: userCount
+          // })
       }
   })
+
+// When the client's connection state changes...
+connectedRef.on("value", function(snap) {
+  // If they are connected..
+  if (snap.val()) {
+  // Add user to the connections list.
+  var con = connectionsRef.push(true)
+  // Remove user from the connection list when they disconnect.
+  con.onDisconnect().remove()
+  userCount--
+  }
+})
 
     // Creates an array that lists out all of the options (Rock, Paper, or Scissors).
     var wins = 0
@@ -60,53 +64,50 @@ var config = {
         $("#rockBtn").on("click", function(){
           console.log($(this).attr("val"))
           userGuess = $(this).attr("val")
-          database.ref().push({
-            Choice: userGuess
-          })
+          userProfile.Choice = userGuess
           $("#play").attr("disabled","disabled")
           $("#selection").html("You Chose Rock")
+          database.ref().push(userProfile)
         })
-    
         $("#paperBtn").on("click", function(){
           console.log($(this).attr("val"))
           userGuess = $(this).attr("val")
-          database.ref().push({
-            Choice: userGuess
-          })
+          userProfile.Choice = userGuess
           $("#play").attr("disabled","disabled")
           $("#selection").html("You Chose Paper")
+          database.ref().push(userProfile)
         })
         
         $("#scissorsBtn").on("click", function(){
           console.log($(this).attr("val"))
           userGuess = $(this).attr("val")
-          database.ref().push({
-            Choice: userGuess
-          })
+          userProfile.Choice = userGuess
           $("#play").attr("disabled","disabled")
           $("#selection").html("You Chose Scissors")
+          database.ref().push(userProfile)
         })
-    
-
-        // var userGuess = 
-        // console.log(userGuess)
-        // //Push to firebase
-        // database.ref().push({
-        //   Choice: userGuess
-        // })
-        
     })
 
-    
+$("#nameSubmit").on("click", function(){
+  var name = $("#name").val()
+  console.log(name)
+  userProfile.Name = name
+  $("#nameHeader").html(name)
+  $("#play").attr("disabled", false)
+  //TODO: Name of Opponent below
+})    
+
+
 database.ref().on("value", function(snapshot){
-  console.log(snapshot.val())
+  console.log(snapshot.val().connections)
   userArr = snapshot.val()
   newArray = []
   Object.keys(userArr).map(function(key) {
       newArray.push([userArr[key]])
-      // console.log(newArray)
   })
-  console.log(newArray[1][0].Profile)
+  console.log(newArray.length)
+  //user profile contains count of users
+  userProfile.userCount = newArray.length
   
 })
 
