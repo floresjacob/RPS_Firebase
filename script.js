@@ -51,106 +51,53 @@ var config = {
     var lossRate = $("#loss")
     var tieRate = $("#tie")
 
+    
+
     $("#play").on("click", function(){
-      
-      reminder.textContent = "Please select r, p, or s"
-      // $("#button").append("<h2>"+reminder.textContent+"</h2>")
-      console.log("hit")
-      
-      prompt("Please select R, P, or S")
-
-      // This function is run whenever the user presses a key.
-      document.onkeyup = function(event) {
+        selection = $("<button id='rockBtn' val='rock'>Rock</button><button id='paperBtn' val='paper'>Paper</button><button id='scissorsBtn' val='scissors'>Scissors</button>")
+        $("#selection").append(selection)
         
-
-        // Determines which key was pressed.
-        var userGuess = event.key
-        console.log(userGuess)
-        //Push to firebase
-        database.ref().push({
-          Choice: userGuess
-      }) 
+        $("#rockBtn").on("click", function(){
+          console.log($(this).attr("val"))
+          userGuess = $(this).attr("val")
+          database.ref().push({
+            Choice: userGuess
+          })
+          $("#play").attr("disabled","disabled")
+          $("#selection").html("You Chose Rock")
+        })
+    
+        $("#paperBtn").on("click", function(){
+          console.log($(this).attr("val"))
+          userGuess = $(this).attr("val")
+          database.ref().push({
+            Choice: userGuess
+          })
+          $("#play").attr("disabled","disabled")
+          $("#selection").html("You Chose Paper")
+        })
         
-        
-        
-        
-        if(userGuess !== "r" && userGuess !== "p" && userGuess !== "s"){
-          alert("Please only input r, p, or s")
-        }
-        // Randomly chooses a choice from the options array. This is the Computer's guess.
+        $("#scissorsBtn").on("click", function(){
+          console.log($(this).attr("val"))
+          userGuess = $(this).attr("val")
+          database.ref().push({
+            Choice: userGuess
+          })
+          $("#play").attr("disabled","disabled")
+          $("#selection").html("You Chose Scissors")
+        })
+    
 
-        if(userGuess === "r" || userGuess === "p" || userGuess === "s"){
-          reminder.textContent = null
-          // Alerts the key the user pressed (userGuess).
-          alert("User guess: " + userGuess)
-          // Alerts the Computer's guess.
-          alert("Computer guess: " + computerGuess)
-          
-          if(userGuess === "r"){
-              if(computerGuess === "p"){
-                alert("You Lose")
-                losses++
-                
-              }
-              else if(computerGuess === "s"){
-                alert("You Win")
-                wins++
-                
-              }
-              else{
-                alert("Tie. Please try again")
-                ties++ 
-              }
-            }
-            else if(userGuess === "p"){
-              if(computerGuess === "s"){
-                alert("You Lose")
-                losses++
-                
-              }
-              else if(computerGuess === "r"){
-                alert("You Win")
-                wins++
-                
-              }
-              else{
-                alert("Tie. Please try again")
-                ties++ 
-              }
-            }
-            else{
-              if(computerGuess === "r"){
-                alert("You Lose")
-                losses++
-                
-              }
-              else if(computerGuess === "p"){
-                alert("You Win")
-                wins++
-                
-              }
-              else{
-                alert("Tie. Please try again")
-                ties++ 
-            }
-          }
-        }
-
-        winRate.textContent = wins;
-        //Push to firebase
-        database.ref().push({
-          Wins: wins,
-          Losses: losses,
-          Ties: ties
-      }) 
-        lossRate.textContent = losses;
-        tieRate.textContent = ties;
-
-      }
+        // var userGuess = 
+        // console.log(userGuess)
+        // //Push to firebase
+        // database.ref().push({
+        //   Choice: userGuess
+        // })
+        
     })
 
-
-
+    
 database.ref().on("value", function(snapshot){
   console.log(snapshot.val())
   userArr = snapshot.val()

@@ -6,6 +6,7 @@
   <title>Rock Paper Scissors
   </title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="style.css">
   <script src="https://use.fontawesome.com/281d32e0e0.js"></script>
 </head>
 
@@ -33,11 +34,23 @@
                     Scissors <i class="fa fa-hand-scissors-o" aria-hidden="true"></i>
                 </div>
                 <hr>
+                <div class="panel panel-default">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h4>Player 1:</h4><input type="text">
+                      <h3>Choice: </h3>                               
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Player 2:</h4><input type="text">
+                        <h3>Choice: </h3>
+                    </div>
+                  </div>
+                </div>
                 <div id="game">
                     <div class="btn btn-default" id="play">
                       Click to Play
                     </div>  <br>
-                    <span id="remind"></span>
+                    <span id="selection"></span>
                     <div class="row">
                       <div class="col-md-6">
                         Wins:
