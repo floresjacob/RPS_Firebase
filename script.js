@@ -1,22 +1,22 @@
 var config = {
-    apiKey: "AIzaSyBgc6oG6MD5ePoP3wLxuUdEN5HOgfelFFk",
-    authDomain: "test1-1ab8a.firebaseapp.com",
-    databaseURL: "https://test1-1ab8a.firebaseio.com",
-    projectId: "test1-1ab8a",
-    storageBucket: "test1-1ab8a.appspot.com",
-    messagingSenderId: "143362573111"
+    apiKey: "AIzaSyBFgYrbjxiakxrIeKgCeXnreBNLJkoLBe0",
+    authDomain: "rockpaperscissors-d0a00.firebaseapp.com",
+    databaseURL: "https://rockpaperscissors-d0a00.firebaseio.com",
+    projectId: "rockpaperscissors-d0a00",
+    storageBucket: "rockpaperscissors-d0a00.appspot.com",
+    messagingSenderId: "810845430384"
   }
   firebase.initializeApp(config)
 
     var database = firebase.database()
     var connectionsRef = database.ref("/connections")
     var connectedRef = database.ref(".info/connected")
-    var userCount = 0
+    var players = database.ref("/players")
     //Disable play button until name is filled out
     $("#play").attr("disabled",true)
     //Create a userProfile to capture this Player's info
     var userProfile = new Object()
-
+    
 
 // When the client's connection state changes...
 connectedRef.on("value", function(snap) {
@@ -26,7 +26,6 @@ connectedRef.on("value", function(snap) {
   var con = connectionsRef.push(true)
   // Remove user from the connection list when they disconnect.
   con.onDisconnect().remove()
-  // userProfile.userCount--
   }
 })
 
@@ -50,33 +49,36 @@ connectedRef.on("value", function(snap) {
         $("#rockBtn").on("click", function(){
           console.log($(this).attr("val"))
           userGuess = $(this).attr("val")
-          $("#rpsChoice").append(userGuess)
-          userProfile.Choice = userGuess
-          $("#play").attr("disabled","disabled")
-          $("#selection").html("You Chose Rock")
-          database.ref().push(userProfile)
-          console.log(userProfile)
+          selectRPS(userGuess)
+          // $("#rpsChoice").append(userGuess)
+          // userProfile.Choice = userGuess
+          // $("#play").attr("disabled","disabled")
+          // $("#selection").html("You Chose Rock")
+          // database.ref().push(userProfile)
+          // console.log(userProfile)
         })
         $("#paperBtn").on("click", function(){
           console.log($(this).attr("val"))
           userGuess = $(this).attr("val")
-          $("#rpsChoice").append(userGuess)
-          userProfile.Choice = userGuess
-          $("#play").attr("disabled","disabled")
-          $("#selection").html("You Chose Paper")
-          database.ref().push(userProfile)
-          console.log(userProfile)
+          selectRPS(userGuess)
+          // $("#rpsChoice").append(userGuess)
+          // userProfile.Choice = userGuess
+          // $("#play").attr("disabled","disabled")
+          // $("#selection").html("You Chose Paper")
+          // database.ref().push(userProfile)
+          // console.log(userProfile)
         })
         
         $("#scissorsBtn").on("click", function(){
           console.log($(this).attr("val"))
           userGuess = $(this).attr("val")
-          $("#rpsChoice").append(userGuess)
-          userProfile.Choice = userGuess
-          $("#play").attr("disabled","disabled")
-          $("#selection").html("You Chose Scissors")
-          database.ref().push(userProfile)
-          console.log(userProfile)
+          selectRPS(userGuess)
+          // $("#rpsChoice").append(userGuess)
+          // userProfile.Choice = userGuess
+          // $("#play").attr("disabled","disabled")
+          // $("#selection").html("You Chose Scissors")
+          // database.ref().push(userProfile)
+          // console.log(userProfile)
         })
     })
 
@@ -86,12 +88,30 @@ $("#nameSubmit").on("click", function(){
   userProfile.Name = name
   $("#nameHeader").html(name)
   $("#play").attr("disabled", false)
-  //TODO: Name of Opponent below
+  if (newArray.length === 1){
+    userProfile.position = 1
+    players.push(userProfile.position)
+    $("#player1").append(name)
+  }
+  else if(newArray.length === 2){
+    $("#player2").append(name)
+    userProfile.position = 2
+    players.push(userProfile.position)
+  }
 })    
+
+function selectRPS(guess){
+  $("rpsChoice").append(guess)
+  userProfile.Choice = guess
+  $("#play").attr("disabled","disabled")
+  $("#selection").html("You Chose " + guess)
+  players.push(userProfile.guess)
+}
+
 
 
 database.ref().on("value", function(snapshot){
-  console.log(snapshot.val().connections)
+  console.log(snapshot.val())
   userArr = snapshot.val().connections
   newArray = []
   Object.keys(userArr).map(function(key) {
@@ -99,8 +119,10 @@ database.ref().on("value", function(snapshot){
   })
   console.log("connections: " + newArray.length)
   //user profile contains count of users
-  userProfile.Count = newArray.length
-  $("#numOnline").text("Number of Players: " + userProfile.Count)
+  players.set(newArray.length)
+
+
+  $("#numOnline").text("Number of Players: " + newArray.length)
 })
 
   
